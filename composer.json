@@ -1,0 +1,29 @@
+{
+    "name": "epigrade/textspinner",
+    "description": "Text spinner written in PHP. Useful for generating text output from spintax.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [{
+        "name": "Augustin Boteanu",
+        "email": "kinkod@users.noreply.github.com",
+        "homepage": "https://www.epigrade.com",
+        "role": "Developer"
+    }],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Epigrade\\TextSpinner\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Epigrade\\TextSpinner\\Test\\": "tests"
+        }
+    }
+}
