@@ -120,7 +120,7 @@ class TextSpinner
         preg_match_all(
             '/'
                 . preg_quote($this->syntaxMarkers['placeholder'], '/')
-                . '[^' . preg_quote($this->syntaxMarkers['placeholder'], '/') . ']+'
+                . '[_a-zA-Z]+[_a-zA-Z0-9]*'
                 . preg_quote($this->syntaxMarkers['placeholder'], '/')
                 . '/',
             $this->spintax,
