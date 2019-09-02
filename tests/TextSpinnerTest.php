@@ -5,7 +5,7 @@ namespace Epigrade\TextSpinner\Test;
 use PHPUnit\Framework\TestCase;
 use Epigrade\TextSpinner\TextSpinner;
 
-class ValidateTest extends TestCase
+class TextSpinnerTest extends TestCase
 {
     public function validSpintax()
     {
