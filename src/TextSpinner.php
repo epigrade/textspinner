@@ -2,6 +2,8 @@
 
 namespace Epigrade\TextSpinner;
 
+use InvalidArgumentException;
+
 /**
  * Text spinner class.
  */
@@ -18,21 +20,27 @@ class TextSpinner
      * @param string $spintax Optional string containing the spintax. 
      * If not provided here you must set $spintax before running any functions on it.
      */
-    public function __construct($spintax = null, $placeholders = [])
+    public function __construct($spintax = '', $placeholders = [], $syntaxMarkers = null)
     {
-        $this->spintax = $spintax;
-        $this->placeholders = $placeholders;
+        $this->setSpintax($spintax);
+        $this->setPlaceholders($placeholders);
 
-        $this->syntaxMarkers = [
-            'open' => '{',
-            'close' => '}',
-            'separator' => '|',
-            'placeholder' => '~',
-        ];
+        if (!is_null($syntaxMarkers)) {
+            $this->setSyntaxMarkers($syntaxMarkers);
+        } else {
+            $this->setSyntaxMarkers([
+                'open' => '{',
+                'close' => '}',
+                'separator' => '|',
+                'placeholder' => '~',
+            ]);
+        }
     }
 
     /**
      * Get spintax.
+     * 
+     * @return mixed
      */
     public function getSpintax()
     {
@@ -41,14 +49,21 @@ class TextSpinner
 
     /**
      * Set spintax.
+     * 
+     * @param string $spintax
      */
     public function setSpintax($spintax)
     {
+        if (!is_string($spintax)) {
+            throw new InvalidArgumentException('Spintax argument must be a string.');
+        }
         $this->spintax = $spintax;
     }
 
     /**
      * Get placeholders.
+     * 
+     * @return array
      */
     public function getPlaceholders()
     {
@@ -57,14 +72,21 @@ class TextSpinner
 
     /**
      * Set placeholders.
+     * 
+     * @param array An array of placeholders where key is placeholder name and value is placeholder value.
      */
     public function setPlaceholders($placeholders)
     {
+        if (!is_array($placeholders)) {
+            throw new InvalidArgumentException('Placeholders argument must be an array.');
+        }
         $this->placeholders = $placeholders;
     }
 
     /**
      * Get syntax markers.
+     * 
+     * @return array An array with keys: open, close, separator, placeholder.
      */
     public function getSyntaxMarkers()
     {
@@ -73,9 +95,17 @@ class TextSpinner
 
     /**
      * Set syntax markers.
+     * 
+     * @param array $syntaxMarkers An array with keys: open, close, separator, placeholder.
      */
     public function setSyntaxMarkers($syntaxMarkers)
     {
+        if (
+            !is_array($syntaxMarkers) ||
+            array_keys($syntaxMarkers) != ['open', 'close', 'separator', 'placeholder']
+        ) {
+            throw new InvalidArgumentException('Placeholders argument must be an array with keys: open, close, separator, placeholder.');
+        }
         $this->syntaxMarkers = $syntaxMarkers;
     }
 
@@ -120,7 +150,7 @@ class TextSpinner
         preg_match_all(
             '/'
                 . preg_quote($this->syntaxMarkers['placeholder'], '/')
-                . '[_a-zA-Z]+[_a-zA-Z0-9]*'
+                . '[^' . preg_quote($this->syntaxMarkers['placeholder'], '/') . ']+'
                 . preg_quote($this->syntaxMarkers['placeholder'], '/')
                 . '/',
             $this->spintax,
@@ -167,8 +197,6 @@ class TextSpinner
      */
     public function replacePlaceholders($str)
     {
-        if (!is_array($this->placeholders))
-            return $str;
         foreach ($this->placeholders as $key => $val) {
             $str = str_replace(
                 $this->syntaxMarkers['placeholder']
